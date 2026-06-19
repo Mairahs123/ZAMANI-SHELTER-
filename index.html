@@ -242,14 +242,16 @@
       <div class="shelter-card">
         <img class="shelter-img" src="${l.img}" loading="lazy">
         <div class="card-content">
-          <span class="badge \( {l.type}"> \){l.type.toUpperCase()}</span>
+          <span class="badge ${l.type}">${l.type.toUpperCase()}</span>
           <h3 class="card-title">${l.title}</h3>
           <p>📍 ${l.location}</p>
           <p>${l.desc}</p>
           <p style="font-size:1.4rem; font-weight:700; color:var(--navy); margin:12px 0;">
             ${l.price} Pi ${l.type==='rent' ? '/month' : ''}
           </p>
-          <button class="primary" onclick="transactListing(\( {l.id}, this)"> \){l.type==='rent' ? 'Rent Now' : 'Buy Now'}</button>
+          <button class="primary" onclick="transactListing(${l.id}, this)">
+${l.type==='rent' ? 'Rent Now' : 'Buy Now'}
+</button>
         </div>
       </div>
     `).join('');
@@ -380,7 +382,7 @@
     cont.innerHTML = listings.map(l => `
       <div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <span class="badge \( {l.type}"> \){l.type.toUpperCase()}</span><br>
+          <span class="badge ${l.type}">${l.type.toUpperCase()}</span>
           <strong>${l.title}</strong><br>
           📍 ${l.location} • ${l.price} Pi
         </div>
