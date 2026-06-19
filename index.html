@@ -8,9 +8,11 @@
   <style>
     :root {
       --navy: #0A2540;
+      --navy-dark: #05121F;
       --accent: #00D4FF;
       --light: #E6F0FA;
       --card: #ffffff;
+      --text: #0A2540;
     }
 
     * { box-sizing: border-box; }
@@ -18,14 +20,16 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0; padding: 0;
       background: var(--light);
-      color: var(--navy);
+      color: var(--text);
+      line-height: 1.6;
     }
 
     header {
-      background: linear-gradient(135deg, var(--navy), #05121F);
+      background: linear-gradient(135deg, var(--navy), var(--navy-dark));
       color: white;
       padding: 1.4rem 1rem;
       text-align: center;
+      box-shadow: 0 4px 15px rgba(10, 37, 64, 0.3);
     }
     header h1 { margin: 0; font-size: 1.95rem; font-weight: 700; }
 
@@ -133,32 +137,41 @@
     <div id="listingsContainer"></div>
   </div>
 
-  <!-- POST & ADMIN sections remain the same as before -->
-  <!-- (I kept them short here to save space - they are unchanged) -->
+  <!-- POST LISTING -->
   <div id="postSection" style="display:none;">
-    <!-- Post form same as previous version -->
-    <h2>Post New Property</h2>
-    <input id="postTitle" type="text" placeholder="Title" style="width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid #ccc;">
-    <select id="postType" style="width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid #ccc;">
-      <option value="rent">Rent</option>
-      <option value="sale">Sale</option>
+    <h2 style="color:var(--navy);">Post New Property</h2>
+    <input id="postTitle" type="text" placeholder="Title (e.g. 3 Bedroom in Guzape)" style="width:100%; padding:12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
+    <select id="postType" style="width:100%; padding:12px; margin-bottom:12px; border-radius:12px;">
+      <option value="rent">Rent (Monthly)</option>
+      <option value="sale">Sale (Outright)</option>
     </select>
-    <input id="postPrice" type="number" placeholder="Price in Pi" style="width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid #ccc;">
-    <input id="postLocation" type="text" placeholder="Location" style="width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid #ccc;">
-    <textarea id="postDesc" rows="4" placeholder="Description" style="width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid #ccc;"></textarea>
+    <input id="postPrice" type="number" placeholder="Price in Pi" style="width:100%; padding:12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
+    <input id="postLocation" type="text" placeholder="Location" style="width:100%; padding:12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
+    <textarea id="postDesc" rows="4" placeholder="Description" style="width:100%; padding:12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;"></textarea>
     
-    <div class="upload-area" onclick="document.getElementById('postPhotoInput').click()">📸 Select Photo from Gallery</div>
-    <input type="file" id="postPhotoInput" accept="image/*" style="display:none;">
-    <img id="postPreview" alt="Preview">
+    <div class="form-group">
+      <label>Upload Photo from Gallery</label>
+      <div class="upload-area" onclick="document.getElementById('postPhotoInput').click()">📸 Tap to Select Photo</div>
+      <input type="file" id="postPhotoInput" accept="image/*" style="display:none;">
+      <img id="postPreview" alt="Preview">
+    </div>
 
-    <button class="primary" onclick="postNewListing()">Post Listing</button>
+    <button id="postBtn" class="primary" onclick="postNewListing()">Post Listing</button>
   </div>
 
+  <!-- ADMIN DASHBOARD -->
   <div id="adminSection" style="display:none;">
-    <h2>Admin Dashboard</h2>
-    <div id="statsGrid"></div>
-    <div id="adminListingsContainer"></div>
-    <button onclick="clearAllListings()" style="background:#ef4444;color:white;width:100%;padding:1rem;margin-top:1rem;border:none;border-radius:12px;">Clear All Listings</button>
+    <div style="background:white; padding:1.5rem; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1); margin-bottom:1.5rem;">
+      <h2>Admin Dashboard</h2>
+      <div id="statsGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:1rem; margin:1.5rem 0;"></div>
+    </div>
+
+    <div style="background:white; padding:1.5rem; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1);">
+      <h3>All Listings</h3>
+      <div id="adminListingsContainer"></div>
+    </div>
+
+    <button class="primary" onclick="clearAllListings()" style="background:#ef4444; margin-top:1rem;">🗑️ Clear All Listings</button>
   </div>
 </div>
 
@@ -168,28 +181,34 @@
   let currentUser = null;
   let listings = [];
   let selectedPostFile = null;
+  let currentFilter = 'all';
 
   Pi.init({ version: "2.0", sandbox: true });
 
-  function showToast(msg) {
+  function showToast(msg, duration = 3000) {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 3000);
+    setTimeout(() => t.classList.remove("show"), duration);
   }
 
   async function loginWithPi() {
     try {
       const auth = await Pi.authenticate(['username', 'payments'], () => {});
       currentUser = auth.user;
+
       document.getElementById("loginBtn").style.display = "none";
       document.getElementById("user-bar").style.display = "flex";
       document.getElementById("userInfo").innerHTML = `👤 @${currentUser.username}`;
       document.getElementById("filters").style.display = "flex";
-      document.getElementById("tabAdmin").style.display = "block";
+      document.getElementById("tabAdmin").style.display = "block";   // ← Admin tab yanzu yana fitowa
+
+      showToast(`Welcome, @${currentUser.username}!`);
       loadListings();
       showTab(0);
-    } catch(e) { showToast("Login failed"); }
+    } catch (err) {
+      showToast("Login failed. Try again.");
+    }
   }
 
   function logout() {
@@ -198,13 +217,14 @@
     document.getElementById("loginBtn").style.display = "block";
     document.getElementById("filters").style.display = "none";
     document.getElementById("tabAdmin").style.display = "none";
+    showToast("Logged out");
   }
 
   function loadListings() {
     const saved = localStorage.getItem("zamaniListings");
     listings = saved ? JSON.parse(saved) : [
-      { id:1, type:"rent", title:"2-Bedroom Flat Gwarinpa", location:"Gwarinpa Estate", price:45, desc:"Clean, 24/7 power", img:"https://picsum.photos/id/1015/800/400" },
-      { id:2, type:"sale", title:"Luxury House Maitama", location:"Maitama", price:2850, desc:"Fully finished", img:"https://picsum.photos/id/1016/800/400" }
+      { id:1, type:"rent", title:"2-Bedroom Flat Gwarinpa", location:"Gwarinpa Estate", price:45, desc:"Clean, 24/7 power", img:"https://images.unsplash.com/photo-1580587771525-78b9e3b2f39e?w=800" },
+      { id:2, type:"sale", title:"Luxury 4-Bedroom Maitama", location:"Maitama District", price:2850, desc:"Fully finished luxury home", img:"https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800" }
     ];
     if (!saved) localStorage.setItem("zamaniListings", JSON.stringify(listings));
     renderListings();
@@ -218,58 +238,186 @@
     const container = document.getElementById("listingsContainer");
     if (!currentUser) return;
 
-    let html = '';
-    filtered.forEach(l => {
-      const badge = `<span class="badge \( {l.type}"> \){l.type.toUpperCase()}</span>`;
-      const priceText = `${l.price} Pi ${l.type === 'rent' ? '/month' : ''}`;
-      const buttonText = l.type === 'rent' ? 'Rent Now' : 'Buy Now';
-      
-      html += `
-        <div class="shelter-card">
-          <img class="shelter-img" src="${l.img}" loading="lazy">
-          <div class="card-content">
-            ${badge}
-            <h3 class="card-title">${l.title}</h3>
-            <p>📍 ${l.location}</p>
-            <p>${l.desc}</p>
-            <p style="font-size:1.4rem;font-weight:700;color:#0A2540;margin:12px 0;">${priceText}</p>
-            <button class="primary" onclick="transactListing(\( {l.id}, this)"> \){buttonText}</button>
-          </div>
+    container.innerHTML = filtered.map(l => `
+      <div class="shelter-card">
+        <img class="shelter-img" src="${l.img}" loading="lazy">
+        <div class="card-content">
+          <span class="badge \( {l.type}"> \){l.type.toUpperCase()}</span>
+          <h3 class="card-title">${l.title}</h3>
+          <p>📍 ${l.location}</p>
+          <p>${l.desc}</p>
+          <p style="font-size:1.4rem; font-weight:700; color:var(--navy); margin:12px 0;">
+            ${l.price} Pi ${l.type==='rent' ? '/month' : ''}
+          </p>
+          <button class="primary" onclick="transactListing(\( {l.id}, this)"> \){l.type==='rent' ? 'Rent Now' : 'Buy Now'}</button>
         </div>
-      `;
-    });
-    container.innerHTML = html;
+      </div>
+    `).join('');
   }
 
+  function filterListings(mode) {
+    currentFilter = mode;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', 
+      (mode==='all' && b.textContent==='All') || b.textContent.toLowerCase()===mode));
+    
+    const filtered = mode==='all' ? listings : listings.filter(l => l.type === mode);
+    renderListings(filtered);
+  }
+
+  // =============== PI PAYMENT ===============
   async function transactListing(id, btn) {
     const listing = listings.find(l => l.id === id);
-    if (!listing) return;
+    if (!listing || !currentUser) return;
 
     const originalText = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = "Processing...";
 
     try {
-      await Pi.createPayment({
+      const memo = listing.type === "rent" 
+        ? `Rent: ${listing.title}` 
+        : `Purchase: ${listing.title}`;
+
+      const payment = {
         amount: listing.price,
-        memo: `${listing.type.toUpperCase()} - ${listing.title}`,
-        metadata: { listingId: id, buyer: currentUser.username }
-      }, {
+        memo: memo,
+        metadata: {
+          listingId: listing.id,
+          title: listing.title,
+          buyer: currentUser.username,
+          type: listing.type
+        }
+      };
+
+      const callbacks = {
         onReadyForServerApproval: () => showToast("Payment request sent..."),
-        onReadyForServerCompletion: (_, txid) => showToast(`✅ Payment Successful!`),
+        onReadyForServerCompletion: (paymentId, txid) => {
+          showToast(`✅ Payment Successful! Tx: ${txid.slice(0,12)}...`, 5000);
+        },
         onCancel: () => showToast("Payment cancelled"),
-        onError: () => showToast("Payment error")
-      });
-    } catch(e) {
-      showToast("Payment failed");
+        onError: (err) => showToast("Payment error occurred")
+      };
+
+      await Pi.createPayment(payment, callbacks);
+    } catch (err) {
+      showToast("Payment failed or cancelled");
     } finally {
       btn.innerHTML = originalText;
       btn.disabled = false;
     }
   }
 
-  // Rest of functions (postNewListing, showTab, etc.) are the same as previous working version
-  // ... (I omitted them here for brevity, but keep them from the last full code)
+  // Photo Upload
+  document.getElementById("postPhotoInput").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 6*1024*1024) return showToast("Maximum 6MB image allowed");
+
+    selectedPostFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById("postPreview").src = ev.target.result;
+      document.getElementById("postPreview").style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  async function postNewListing() {
+    const title = document.getElementById("postTitle").value.trim();
+    const type = document.getElementById("postType").value;
+    const price = parseFloat(document.getElementById("postPrice").value);
+    const location = document.getElementById("postLocation").value.trim();
+    const desc = document.getElementById("postDesc").value.trim();
+
+    if (!title || !price || !location) {
+      showToast("Title, Price and Location are required!");
+      return;
+    }
+
+    let imgUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a9c?w=800";
+    if (selectedPostFile) {
+      imgUrl = document.getElementById("postPreview").src;
+    }
+
+    const newListing = {
+      id: Date.now(),
+      type, title, location, price,
+      desc: desc || "No description",
+      img: imgUrl
+    };
+
+    listings.unshift(newListing);
+    saveListings();
+    renderListings();
+
+    showToast("✅ Listing Posted Successfully!");
+
+    // Reset form
+    document.getElementById("postTitle").value = "";
+    document.getElementById("postPrice").value = "";
+    document.getElementById("postLocation").value = "";
+    document.getElementById("postDesc").value = "";
+    document.getElementById("postPreview").style.display = "none";
+    selectedPostFile = null;
+
+    showTab(0);
+  }
+
+  function renderAdminDashboard() {
+    const total = listings.length;
+    const totalValue = listings.reduce((a, b) => a + b.price, 0);
+
+    document.getElementById("statsGrid").innerHTML = `
+      <div style="background:#f0f7ff;padding:1.2rem;border-radius:12px;text-align:center;">
+        <h3>${total}</h3><p>Total Listings</p>
+      </div>
+      <div style="background:#f0f7ff;padding:1.2rem;border-radius:12px;text-align:center;">
+        <h3>${totalValue}</h3><p>Total Value (Pi)</p>
+      </div>
+    `;
+
+    const cont = document.getElementById("adminListingsContainer");
+    cont.innerHTML = listings.map(l => `
+      <div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="badge \( {l.type}"> \){l.type.toUpperCase()}</span><br>
+          <strong>${l.title}</strong><br>
+          📍 ${l.location} • ${l.price} Pi
+        </div>
+        <button onclick="deleteListing(${l.id})" style="background:#ef4444;color:white;border:none;padding:8px 16px;border-radius:8px;">Delete</button>
+      </div>
+    `).join('');
+  }
+
+  function deleteListing(id) {
+    if (confirm("Delete this listing?")) {
+      listings = listings.filter(l => l.id !== id);
+      saveListings();
+      renderListings();
+      renderAdminDashboard();
+      showToast("Listing deleted");
+    }
+  }
+
+  function clearAllListings() {
+    if (confirm("Clear ALL listings permanently?")) {
+      listings = [];
+      saveListings();
+      renderListings();
+      renderAdminDashboard();
+      showToast("All listings cleared");
+    }
+  }
+
+  function showTab(n) {
+    document.getElementById("browseSection").style.display = n === 0 ? "block" : "none";
+    document.getElementById("postSection").style.display = n === 1 ? "block" : "none";
+    document.getElementById("adminSection").style.display = n === 2 ? "block" : "none";
+
+    document.querySelectorAll(".tab").forEach((tab, i) => tab.classList.toggle("active", i === n));
+
+    if (n === 2) renderAdminDashboard();
+  }
 
   window.onload = () => {
     loadListings();
@@ -277,4 +425,4 @@
   };
 </script>
 </body>
-  </html>
+</html>
