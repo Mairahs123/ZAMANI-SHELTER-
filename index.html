@@ -194,6 +194,10 @@
 
   async function loginWithPi() {
     try {
+      if (!currentUser) {
+   showToast("Please login with Pi first");
+   return;
+      }
       const auth = await Pi.authenticate(['username', 'payments'], () => {});
       currentUser = auth.user;
 
@@ -203,13 +207,7 @@
       document.getElementById("filters").style.display = "flex";
       document.getElementById("tabAdmin").style.display = "block";   // ← Admin tab yanzu yana fitowa
 
-      showToast(`Welcome, @${currentUser.username}!`);
-      loadListings();
-      showTab(0);
-    } catch (err) {
-      showToast("Login failed. Try again.");
-    }
-  }
+
 
   function logout() {
     currentUser = null;
@@ -235,26 +233,60 @@
   }
 
   function renderListings(filtered = listings) {
-    const container = document.getElementById("listingsContainer");
-    if (!currentUser) return;
 
-    container.innerHTML = filtered.map(l => `
-      <div class="shelter-card">
-        <img class="shelter-img" src="${l.img}" loading="lazy">
-        <div class="card-content">
-          <span class="badge ${l.type}">${l.type.toUpperCase()}</span>
-          <h3 class="card-title">${l.title}</h3>
-          <p>📍 ${l.location}</p>
-          <p>${l.desc}</p>
-          <p style="font-size:1.4rem; font-weight:700; color:var(--navy); margin:12px 0;">
-            ${l.price} Pi ${l.type==='rent' ? '/month' : ''}
-          </p>
-          <button class="primary" onclick="transactListing(${l.id}, this)">
-${l.type==='rent' ? 'Rent Now' : 'Buy Now'}
-</button>
-        </div>
+  const container =
+    document.getElementById("listingsContainer");
+
+  if (!currentUser) return;
+
+  container.innerHTML = filtered.map(l => `
+
+    <div class="shelter-card">
+
+      <img
+        class="shelter-img"
+        src="${l.img}"
+        loading="lazy"
+      >
+
+      <div class="card-content">
+
+        <span class="badge ${l.type}">
+          ${l.type.toUpperCase()}
+        </span>
+
+        <h3 class="card-title">
+          ${l.title}
+        </h3>
+
+        <p>📍 ${l.location}</p>
+
+        <p>${l.desc}</p>
+
+        <p style="
+          font-size:1.4rem;
+          font-weight:700;
+          color:var(--navy);
+          margin:12px 0;
+        ">
+          ${l.price} Pi
+          ${l.type === 'rent' ? '/month' : ''}
+        </p>
+
+        <button
+          class="primary"
+          onclick="transactListing(${l.id}, this)"
+        >
+          ${l.type === 'rent'
+            ? 'Rent Now'
+            : 'Buy Now'}
+        </button>
+
       </div>
-    `).join('');
+
+    </div>
+
+  `).join('');
   }
 
   function filterListings(mode) {
@@ -324,29 +356,26 @@ ${l.type==='rent' ? 'Rent Now' : 'Buy Now'}
     reader.readAsDataURL(file);
   });
 
-  async function postNewListing() {
-    const title = document.getElementById("postTitle").value.trim();
-    const type = document.getElementById("postType").value;
-    const price = parseFloat(document.getElementById("postPrice").value);
-    const location = document.getElementById("postLocation").value.trim();
-    const desc = document.getElementById("postDesc").value.trim();
+  async function loginWithPi() {
+  try {
+    const auth = await Pi.authenticate(['username', 'payments'], () => {});
+    currentUser = auth.user;
 
-    if (!title || !price || !location) {
-      showToast("Title, Price and Location are required!");
-      return;
-    }
+    document.getElementById("loginBtn").style.display = "none";
+    document.getElementById("user-bar").style.display = "flex";
+    document.getElementById("userInfo").innerHTML = `👤 @${currentUser.username}`;
+    document.getElementById("filters").style.display = "flex";
+    document.getElementById("tabAdmin").style.display = "block";
 
-    let imgUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a9c?w=800";
-    if (selectedPostFile) {
-      imgUrl = document.getElementById("postPreview").src;
-    }
+    showToast(`Welcome, @${currentUser.username}!`);
+    loadListings();
+    showTab(0);
 
-    const newListing = {
-      id: Date.now(),
-      type, title, location, price,
-      desc: desc || "No description",
-      img: imgUrl
-    };
+  } catch (err) {
+    console.log(err);
+    showToast("Login failed. Try again.");
+  }
+}
 
     listings.unshift(newListing);
     saveListings();
