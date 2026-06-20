@@ -5,8 +5,7 @@ const app = express();
 
 app.use(express.json());
 
-// Replace with your real API key from the Pi Developer Portal
-const PI_API_KEY = "Key d29qufadp7fbjt1tqqfuiagqpha86zxvkst139icpeuheqjsgipt0uylfs3dvmi";
+const PI_API_KEY = process.env.PI_API_KEY;
 
 app.post('/api/approve-payment', async (req, res) => {
     const { paymentId } = req.body;
