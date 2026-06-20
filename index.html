@@ -207,6 +207,7 @@
   let selectedPostFile = null;
   let currentFilter = 'all';
 
+  // Make sure sandbox is set to true during testing in the Pi Developer Sandbox browser
   Pi.init({ version: "2.0", sandbox: true });
 
   function showToast(msg, duration = 2800) {
@@ -289,11 +290,42 @@
     renderListings(filtered);
   }
 
+  // ACTIVE PI NETWORK PAYMENT LOGIC
   function transactListing(id, btn) {
     const listing = listings.find(l => l.id === id);
     if (!listing) return;
-    showToast(`Processing ${listing.type} payment for ${listing.price} Pi...`);
-    // Custom Pi.createPayment logic can be safely written here
+
+    showToast(`Opening Pi Wallet for ${listing.title}...`);
+
+    Pi.createPayment({
+      amount: listing.price,
+      memo: `Payment for: ${listing.title} (${listing.type})`,
+      metadata: { listingId: listing.id, type: listing.type },
+    }, {
+      onReadyForServerApproval: function(paymentId) {
+        showToast("Payment created! Approving...");
+        console.log("Payment ID waiting for backend server approval:", paymentId);
+        
+        // IMPORTANT NOTE FOR DEVS:
+        // You must pass this paymentId to your own backend server here.
+        // Your backend server must POST to the Pi API to approve the payment.
+        // For local simulation/UI testing purposes only, we will alert success:
+        showToast("Sent to server for approval...");
+      },
+      onReadyForServerCompletion: function(paymentId, txid) {
+        showToast("Payment executing... Finalizing transaction.");
+        console.log("Transaction ID created:", txid);
+        
+        // Your backend must hit Pi's /complete endpoint here.
+      },
+      onCancel: function(paymentId) {
+        showToast("Payment cancelled by user.");
+      },
+      onError: function(error, payment) {
+        showToast("Payment Error occurred.");
+        console.error("Pi Payment Error:", error);
+      }
+    });
   }
 
   // Photo Upload Handler
@@ -417,4 +449,4 @@
   };
 </script>
 </body>
-</html>
+  </html>
