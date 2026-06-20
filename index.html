@@ -18,43 +18,21 @@
     * { box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--light);
-      color: var(--text);
+      margin: 0; padding: 0;
+      background: var(--light); color: var(--text);
       line-height: 1.6;
     }
 
     header {
       background: linear-gradient(135deg, var(--navy), var(--navy-dark));
-      color: white;
-      padding: 1.4rem 1rem;
-      text-align: center;
+      color: white; padding: 1.4rem 1rem; text-align: center;
       box-shadow: 0 4px 15px rgba(10, 37, 64, 0.3);
     }
     header h1 { margin: 0; font-size: 1.95rem; font-weight: 700; }
 
-    .tabs {
-      display: flex;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .tab {
-      flex: 1;
-      padding: 1.1rem;
-      text-align: center;
-      font-weight: 600;
-      cursor: pointer;
-      border-bottom: 4px solid transparent;
-    }
-    .tab.active {
-      border-bottom: 4px solid var(--accent);
-      color: var(--navy);
-      background: #f8fbff;
-    }
+    .tabs { display: flex; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+    .tab { flex: 1; padding: 1.1rem; text-align: center; font-weight: 600; cursor: pointer; border-bottom: 4px solid transparent; }
+    .tab.active { border-bottom: 4px solid var(--accent); color: var(--navy); background: #f8fbff; }
 
     .container { max-width: 640px; margin: 1.5rem auto; padding: 0 1rem; }
 
@@ -64,39 +42,18 @@
       margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
-    .shelter-card {
-      background: var(--card); border-radius: 20px; overflow: hidden;
-      margin-bottom: 1.8rem; box-shadow: 0 6px 20px rgba(10, 37, 64, 0.12);
-    }
+    .shelter-card { background: var(--card); border-radius: 20px; overflow: hidden; margin-bottom: 1.8rem; box-shadow: 0 6px 20px rgba(10, 37, 64, 0.12); }
     .shelter-img { width: 100%; height: 200px; object-fit: cover; }
-
     .card-content { padding: 1.3rem; }
     .card-title { margin: 0 0 0.6rem; font-size: 1.3rem; font-weight: 700; }
 
-    .badge {
-      display: inline-block; padding: 5px 12px; border-radius: 999px;
-      font-size: 0.82rem; font-weight: 700; margin-bottom: 10px;
-    }
+    .badge { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; margin-bottom: 10px; }
     .badge.rent { background: #10b981; color: white; }
     .badge.sale { background: #ef4444; color: white; }
 
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-      color: var(--navy);
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 0.8rem;
-      border-radius: 12px;
-      border: 1.5px solid #ddd;
-      font-family: inherit;
-      font-size: 1rem;
-    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; color: var(--navy); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem; border-radius: 12px; border: 1.5px solid #ddd; font-family: inherit; font-size: 1rem; }
 
     button.primary {
       background: var(--navy); color: white; border: none;
@@ -106,33 +63,15 @@
     }
 
     .filter-bar { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .filter-btn {
-      padding: 10px 20px; border-radius: 999px; background: white;
-      border: 1.5px solid #ddd; cursor: pointer; font-weight: 500;
-    }
+    .filter-btn { padding: 10px 20px; border-radius: 999px; background: white; border: 1.5px solid #ddd; cursor: pointer; font-weight: 500; }
     .filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
 
-    .upload-area {
-      border: 2.5px dashed var(--navy); padding: 2.5rem 1rem;
-      text-align: center; border-radius: 16px; cursor: pointer;
-      background: white;
-    }
+    .upload-area { border: 2.5px dashed var(--navy); padding: 2.5rem 1rem; text-align: center; border-radius: 16px; cursor: pointer; background: white; }
     .upload-area:hover { background: #f0f7ff; border-color: var(--accent); }
-
     #postPreview { max-width: 100%; max-height: 260px; margin: 15px auto; border-radius: 16px; display: none; }
 
-    #toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      background: var(--navy); color: white; padding: 0.9rem 1.6rem;
-      border-radius: 999px; z-index: 10000; opacity: 0; transition: opacity 0.4s;
-    }
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--navy); color: white; padding: 0.9rem 1.6rem; border-radius: 999px; z-index: 10000; opacity: 0; transition: opacity 0.4s; }
     #toast.show { opacity: 1; }
-
-    .spinner {
-      width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3);
-      border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -154,6 +93,7 @@
     <button onclick="logout()" style="background:none;border:none;color:var(--accent);font-weight:600;">Logout</button>
   </div>
 
+  <!-- BROWSE -->
   <div id="browseSection">
     <button id="loginBtn" class="primary" onclick="loginWithPi()">Login with Pi to Start</button>
     <div id="filters" class="filter-bar" style="display:none;">
@@ -164,6 +104,7 @@
     <div id="listingsContainer"></div>
   </div>
 
+  <!-- POST LISTING -->
   <div id="postSection" style="display:none;">
     <h2 style="color:var(--navy);">Post New Property</h2>
     <div class="form-group"><label>Title</label><input id="postTitle" type="text" placeholder="e.g. 3-Bedroom in Guzape"></div>
@@ -184,6 +125,7 @@
     <button id="postBtn" class="primary" onclick="postNewListing()">Post Listing</button>
   </div>
 
+  <!-- ADMIN DASHBOARD -->
   <div id="adminSection" style="display:none;">
     <div style="background:white; padding:1.5rem; border-radius:20px; box-shadow:0 6px 20px rgba(0,0,0,0.1); margin-bottom:1.5rem;">
       <h2>Admin Dashboard</h2>
@@ -207,8 +149,7 @@
   let selectedPostFile = null;
   let currentFilter = 'all';
 
-  // Make sure sandbox is set to true during testing in the Pi Developer Sandbox browser
-  Pi.init({ version: "2.0", sandbox: true });
+  Pi.init({ version: "2.0", sandbox: false });
 
   function showToast(msg, duration = 2800) {
     const t = document.getElementById("toast");
@@ -290,50 +231,54 @@
     renderListings(filtered);
   }
 
-  // ACTIVE PI NETWORK PAYMENT LOGIC
+  // REAL LIVE BACKEND LINKED PAYMENT 
   function transactListing(id, btn) {
     const listing = listings.find(l => l.id === id);
     if (!listing) return;
 
-    showToast(`Opening Pi Wallet for ${listing.title}...`);
+    showToast("Opening Pi Wallet...");
 
     Pi.createPayment({
       amount: listing.price,
-      memo: `Payment for: ${listing.title} (${listing.type})`,
-      metadata: { listingId: listing.id, type: listing.type },
+      memo: `Zamani Shelters: ${listing.title}`,
+      metadata: { listingId: listing.id },
     }, {
       onReadyForServerApproval: function(paymentId) {
-        showToast("Payment created! Approving...");
-        console.log("Payment ID waiting for backend server approval:", paymentId);
-        
-        // IMPORTANT NOTE FOR DEVS:
-        // You must pass this paymentId to your own backend server here.
-        // Your backend server must POST to the Pi API to approve the payment.
-        // For local simulation/UI testing purposes only, we will alert success:
-        showToast("Sent to server for approval...");
+        showToast("Verifying with server...");
+        // Call your backend execution path to approve the blockchain block
+        fetch('/api/approve-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId: paymentId })
+        })
+        .then(res => res.json())
+        .then(data => {
+           if(data.success) showToast("Payment Approved! Authorizing wallet...");
+        })
+        .catch(err => showToast("Server Approval Timed out"));
       },
       onReadyForServerCompletion: function(paymentId, txid) {
-        showToast("Payment executing... Finalizing transaction.");
-        console.log("Transaction ID created:", txid);
-        
-        // Your backend must hit Pi's /complete endpoint here.
+        showToast("Finalizing transaction...");
+        // Call your backend execution path to close and settle payment
+        fetch('/api/complete-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId: paymentId, txid: txid })
+        })
+        .then(res => res.json())
+        .then(data => {
+           if(data.success) showToast("Property Reserved Successfully! 🎉");
+        });
       },
-      onCancel: function(paymentId) {
-        showToast("Payment cancelled by user.");
-      },
-      onError: function(error, payment) {
-        showToast("Payment Error occurred.");
-        console.error("Pi Payment Error:", error);
-      }
+      onCancel: function(paymentId) { showToast("Payment cancelled."); },
+      onError: function(error, payment) { showToast("Payment processing error."); }
     });
   }
 
-  // Photo Upload Handler
+  // Gallery Reader
   document.getElementById("postPhotoInput").addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 6*1024*1024) return showToast("Max 6MB allowed");
-
     selectedPostFile = file;
     const reader = new FileReader();
     reader.onload = ev => {
@@ -350,103 +295,43 @@
     const location = document.getElementById("postLocation").value.trim();
     const desc = document.getElementById("postDesc").value.trim();
 
-    if (!title || !price || !location) {
-      showToast("Title, Price and Location are required");
-      return;
-    }
+    if (!title || !price || !location) return showToast("Required fields missing");
 
     let imageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a9c?w=800";
-    if (selectedPostFile) {
-      imageUrl = document.getElementById("postPreview").src;
-    }
+    if (selectedPostFile) imageUrl = document.getElementById("postPreview").src;
 
-    const newListing = {
-      id: Date.now(),
-      type,
-      title,
-      location,
-      price,
-      desc: desc || "No description provided",
-      img: imageUrl
-    };
-
-    listings.unshift(newListing);
-    saveListings();
-    renderListings();
+    listings.unshift({ id: Date.now(), type, title, location, price, desc: desc || "Premium house", img: imageUrl });
+    saveListings(); renderListings();
     showToast("Listing Posted Successfully! 🎉");
-
-    // Reset form fields
-    document.getElementById("postTitle").value = "";
-    document.getElementById("postPrice").value = "";
-    document.getElementById("postLocation").value = "";
-    document.getElementById("postDesc").value = "";
-    document.getElementById("postPreview").style.display = "none";
-    selectedPostFile = null;
-
     showTab(0);
   }
 
   function renderAdminDashboard() {
     const total = listings.length;
     const totalValue = listings.reduce((sum, l) => sum + l.price, 0);
-    
     document.getElementById("statsGrid").innerHTML = `
-      <div style="background:#f0f7ff;padding:1rem;border-radius:12px;text-align:center;">
-        <h3>${total}</h3><p>Total Listings</p>
-      </div>
-      <div style="background:#f0f7ff;padding:1rem;border-radius:12px;text-align:center;">
-        <h3>${totalValue}</h3><p>Total Value (Pi)</p>
-      </div>
+      <div style="background:#f0f7ff;padding:1rem;border-radius:12px;text-align:center;"><h3>${total}</h3><p>Total</p></div>
+      <div style="background:#f0f7ff;padding:1rem;border-radius:12px;text-align:center;"><h3>${totalValue}</h3><p>Pi Value</p></div>
     `;
-
-    const adminCont = document.getElementById("adminListingsContainer");
-    adminCont.innerHTML = listings.map(l => `
+    document.getElementById("adminListingsContainer").innerHTML = listings.map(l => `
       <div style="padding:1rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <span class="badge ${l.type}">${l.type.toUpperCase()}</span><br>
-          <strong>${l.title}</strong><br>
-          📍 ${l.location} • ${l.price} Pi
-        </div>
-        <button onclick="deleteListing(${l.id})" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;">Delete</button>
+        <div><strong>${l.title}</strong> - ${l.price} Pi</div>
+        <button onclick="deleteListing(${l.id})" style="background:#ef4444;color:white;border:none;padding:6px;border-radius:6px;">Delete</button>
       </div>
     `).join('');
   }
 
-  function deleteListing(id) {
-    if (confirm("Delete this listing?")) {
-      listings = listings.filter(l => l.id !== id);
-      saveListings();
-      renderListings();
-      renderAdminDashboard();
-      showToast("Listing deleted");
-    }
-  }
-
-  function clearAllListings() {
-    if (confirm("Clear ALL listings?")) {
-      listings = [];
-      saveListings();
-      renderListings();
-      renderAdminDashboard();
-      showToast("All listings cleared");
-    }
-  }
-
+  function deleteListing(id) { listings = listings.filter(l => l.id !== id); saveListings(); renderListings(); renderAdminDashboard(); }
+  function clearAllListings() { listings = []; saveListings(); renderListings(); renderAdminDashboard(); }
   function showTab(n) {
     document.getElementById("browseSection").style.display = n === 0 ? "block" : "none";
     document.getElementById("postSection").style.display = n === 1 ? "block" : "none";
     document.getElementById("adminSection").style.display = n === 2 ? "block" : "none";
-
     document.querySelectorAll(".tab").forEach((tab, i) => tab.classList.toggle("active", i === n));
-
     if (n === 2) renderAdminDashboard();
   }
 
-  window.onload = () => {
-    loadListings();
-    showTab(0);
-    document.getElementById("tabAdmin").style.display = "none";
-  };
+  window.onload = () => { loadListings(); showTab(0); document.getElementById("tabAdmin").style.display = "none"; };
 </script>
 </body>
   </html>
